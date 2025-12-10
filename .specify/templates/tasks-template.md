@@ -146,16 +146,25 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
-## Phase N: Polish & Cross-Cutting Concerns
+## Phase N: Final Review and Pull Request
 
-**Purpose**: Improvements that affect multiple user stories
+**Purpose**: Verify the completed chapter against all constitutional standards and prepare it for merging.
 
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
-- [ ] TXXX Run quickstart.md validation
+- [ ] TXXX **Run All Technical Checks**:
+    - [ ] Run automated code/simulation tests in a Python/ROS environment.
+- [ ] TXXX **Run All Content Checks**:
+    - [ ] Conduct plagiarism check (target: 0% similarity).
+    - [ ] Verify readability (Flesch-Kincaid 10-12) and active voice (>=75%).
+    - [ ] Confirm all citations are APA 7th Edition compliant and traceable.
+    - [ ] Confirm chapter meets word count (5k-7k words) and format (Docusaurus/PDF) requirements.
+- [ ] TXXX **Update Documentation**:
+    - [ ] Ensure `quickstart.md` is up-to-date.
+    - [ ] Add/update any other required docs in `docs/`.
+- [ ] TXXX **Prepare Verification Evidence**:
+    - [ ] Collate links/screenshots for test reports, plagiarism scans, and readability scores.
+- [ ] TXXX **Create Pull Request**:
+    - [ ] Create a pull request to merge the feature branch.
+    - [ ] Fill out the 'Verification Checklist' in the PR description with the evidence collected above.
 
 ---
 

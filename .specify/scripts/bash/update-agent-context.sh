@@ -48,15 +48,19 @@ set -o pipefail
 # Configuration and Global Variables
 #==============================================================================
 
+AGENT_TYPE="${1:-}" # First argument is agent type
+shift # Remove agent type from arguments
+
+FEATURE_ARGS=("$@") # Remaining arguments are for feature context
+
 # Get script directory and load common functions
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 # Get all paths and variables from common functions
-eval $(get_feature_paths)
+eval $(get_feature_paths "${FEATURE_ARGS[@]}")
 
-NEW_PLAN="$IMPL_PLAN"  # Alias for compatibility with existing code
-AGENT_TYPE="${1:-}"
+NEW_PLAN="$IMPL_PLAN" # Alias for compatibility with existing code
 
 # Agent-specific file paths  
 CLAUDE_FILE="$REPO_ROOT/CLAUDE.md"

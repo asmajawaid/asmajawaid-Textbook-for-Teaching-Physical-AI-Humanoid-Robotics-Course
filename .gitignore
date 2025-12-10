@@ -1,0 +1,39 @@
+# Git Ignore for VLA Module
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+.Python
+.mypy_cache/
+.pytest_cache/
+
+# C++ (for whisper.cpp, ROS 2 C++ packages if any)
+build/
+bin/
+obj/
+out/
+*.o
+*.so
+*.a
+*.exe
+*.dll
+
+# ROS 2 Specific (often found in workspace root)
+install/
+log/
+build/
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+*.log
+.env*
+.env

@@ -39,7 +39,7 @@ class Vlanode(Node):
         self.get_logger().info("Listening for commands... Press Ctrl+C to stop.")
 
         # 4. Action Primitives
-        self.action_primitives = ActionPrimitives()
+        self.action_primitives = ActionPrimitives(self.get_logger())
 
         # Timer to periodically check for voice commands
         self.create_timer(1.0, self.listen_and_process)

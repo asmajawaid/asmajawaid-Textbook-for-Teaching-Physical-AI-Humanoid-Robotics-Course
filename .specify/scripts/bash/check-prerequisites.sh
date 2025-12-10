@@ -26,6 +26,7 @@ JSON_MODE=false
 REQUIRE_TASKS=false
 INCLUDE_TASKS=false
 PATHS_ONLY=false
+FEATURE_ARGS=()
 
 for arg in "$@"; do
     case "$arg" in
@@ -43,7 +44,7 @@ for arg in "$@"; do
             ;;
         --help|-h)
             cat << 'EOF'
-Usage: check-prerequisites.sh [OPTIONS]
+Usage: check-prerequisites.sh [OPTIONS] [FEATURE_CONTEXT_ARGS...]
 
 Consolidated prerequisite checking for Spec-Driven Development workflow.
 
@@ -54,22 +55,26 @@ OPTIONS:
   --paths-only        Only output path variables (no prerequisite validation)
   --help, -h          Show this help message
 
+FEATURE_CONTEXT_ARGS:
+  Any additional arguments are passed to get_feature_paths in common.sh to help
+  determine the current feature context (e.g., "Chapter: My Feature Name").
+
 EXAMPLES:
-  # Check task prerequisites (plan.md required)
-  ./check-prerequisites.sh --json
+  # Check task prerequisites for a specific chapter
+  ./check-prerequisites.sh --json "Chapter: Module 4- Vision-Language-Action (VLA)"
   
-  # Check implementation prerequisites (plan.md + tasks.md required)
+  # Check implementation prerequisites for current feature
   ./check-prerequisites.sh --json --require-tasks --include-tasks
   
-  # Get feature paths only (no validation)
-  ./check-prerequisites.sh --paths-only
+  # Get feature paths only for a specific chapter
+  ./check-prerequisites.sh --paths-only "Chapter: Module 4- Vision-Language-Action (VLA)"
   
 EOF
             exit 0
             ;;
         *)
-            echo "ERROR: Unknown option '$arg'. Use --help for usage information." >&2
-            exit 1
+            # Collect non-option arguments as feature context
+            FEATURE_ARGS+=("$arg")
             ;;
     esac
 done
@@ -79,7 +84,7 @@ SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 # Get feature paths and validate branch
-eval $(get_feature_paths)
+eval $(get_feature_paths "${FEATURE_ARGS[@]}")
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
 # If paths-only mode, output paths and exit (support JSON + paths-only combined)

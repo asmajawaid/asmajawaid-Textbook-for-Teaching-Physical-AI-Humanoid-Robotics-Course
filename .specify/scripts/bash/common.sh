@@ -14,6 +14,40 @@ get_repo_root() {
 
 # Get current branch, with fallback for non-git repositories
 get_current_branch() {
+    local chapter_arg=""
+    for arg in "$@"; do
+        if [[ "$arg" =~ ^Chapter:\ (.*) ]]; then
+            chapter_arg="${BASH_REMATCH[1]}"
+            local module_prefix_raw=$(echo "$chapter_arg" | cut -d'-' -f1)
+            local module_num=$(echo "$module_prefix_raw" | sed -E 's/Module ([0-9]+)/\1/')
+            local module_name_raw=$(echo "$chapter_arg" | cut -d'-' -f2- | sed -E 's/^\ //') # Remove leading space if any
+
+            local padded_num=""
+            if [[ -n "$module_num" ]]; then
+                padded_num=$(printf "%03d" "$module_num")
+            fi
+            
+            local clean_name=$(echo "$module_name_raw" | tr ' ' '-' | tr -d '()' | tr '[:upper:]' '[:lower:]' | sed -E 's/^-+|-+$//g' | sed -E 's/-+/-/g')
+
+            if [[ -n "$padded_num" && -n "$clean_name" ]]; then
+                chapter_arg="${padded_num}-${clean_name}"
+            elif [[ -n "$padded_num" ]]; then
+                chapter_arg="$padded_num"
+            else
+                chapter_arg="$clean_name"
+            fi
+            # Convert "Module 3 nvidia-isaac-module" to "003-nvidia-isaac-module"
+            # Assuming format "Module N <rest_of_name>" -> "00N-<rest_of_name>"
+
+            break
+        fi
+    done
+
+    if [[ -n "$chapter_arg" ]]; then
+        echo "$chapter_arg"
+        return
+    fi
+
     # First check if SPECIFY_FEATURE environment variable is set
     if [[ -n "${SPECIFY_FEATURE:-}" ]]; then
         echo "$SPECIFY_FEATURE"
@@ -125,8 +159,9 @@ find_feature_dir_by_prefix() {
 }
 
 get_feature_paths() {
+    local args=("$@")
     local repo_root=$(get_repo_root)
-    local current_branch=$(get_current_branch)
+    local current_branch=$(get_current_branch "${args[@]}")
     local has_git_repo="false"
 
     if has_git; then
