@@ -1,7 +1,5 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 /**
  * Creating a sidebar enables you to:
  - create an ordered group of docs
@@ -22,27 +20,44 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Physical AI Course',
       items: [
-        'introduction',
-        'vla_module',
+        'introduction', // The main course introduction
         {
           type: 'category',
-          label: 'Chapter 1: ROS 2 Basics',
-          items: ['chapter1_sub_topic_a', 'chapter1_sub_topic_b'], // Dummy sub-topics
+          label: 'Module 1: ROS 2 Core Fundamentals',
+          link: {
+            type: 'doc',
+            id: 'ros-2-basics-intro',
+          },
+          items: [
+            // Future sub-pages for this module can go here
+          ],
+        },
+        {
+          type: 'doc',
+          id: 'vla_module', // Direct link to the VLA module page
+          label: 'Module 2: Vision-Language-Action (VLA) Pipeline',
         },
         {
           type: 'category',
-          label: 'Chapter 2: Digital Twin Module',
-          items: ['chapter2_sub_topic_a'], // Dummy sub-topics
+          label: 'Module 3: Humanoid Kinematics and Control',
+          link: {
+            type: 'doc',
+            id: 'humanoid-kinematics-intro',
+          },
+          items: [
+            // Future sub-pages for this module can go here
+          ],
         },
         {
           type: 'category',
-          label: 'Chapter 3: Humanoid Control',
-          items: ['chapter3_sub_topic_a', 'chapter3_sub_topic_b', 'chapter3_sub_topic_c'], // Dummy sub-topics
-        },
-        {
-          type: 'category',
-          label: 'Appendix: Tools Setup',
-          items: ['appendix_tool_a',. 'appendix_tool_b'], // Dummy sub-topics
+          label: 'Module 4: Synthetic Data and Simulation',
+          link: {
+            type: 'doc',
+            id: 'simulation-data-intro',
+          },
+          items: [
+            // Future sub-pages for this module can go here
+          ],
         },
       ],
     },
