@@ -30,7 +30,7 @@ jobs:
           node-version: 20.x
           cache: 'npm'
           working-directory: website
-          cache-dependency-path: website/
+          # cache-dependency-path: website/
       - name: Print current working directory
         run: pwd
       - name: Install dependencies
