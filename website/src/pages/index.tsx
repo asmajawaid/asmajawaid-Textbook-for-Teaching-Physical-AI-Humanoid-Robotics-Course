@@ -14,14 +14,14 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <Heading as="h1" className="hero__title">
-          {siteConfig.title}
+          {'Physical AI & Humanoid Robotics Course'}
         </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className="hero__subtitle">{'Bridging Vision-Language Models with Real-World Robot Control using ROS 2.'}</p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            to="/docs/introduction">
+            Start Reading Now
           </Link>
         </div>
       </div>

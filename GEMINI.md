@@ -4,7 +4,7 @@ Auto-generated from all feature plans. Last updated: 2025-12-09
 
 ## Active Technologies
 
-- (006-update-module3-spec)
+
 
 ## Project Structure
 
@@ -24,7 +24,7 @@ tests/
 
 ## Recent Changes
 
-- 006-update-module3-spec: Added
+
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

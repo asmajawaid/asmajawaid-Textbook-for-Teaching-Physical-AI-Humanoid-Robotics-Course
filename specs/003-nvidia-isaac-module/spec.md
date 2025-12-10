@@ -2,7 +2,8 @@
 
 **Feature Branch**: `003-nvidia-isaac-module`  
 **Created**: 2025-12-09  
-**Status**: Draft  
+**Status**: Finalized
+**Version**: 1.0.0  
 **Input**: User description: "Chapter: Module 3 nvidia-isaac-module"
 
 ## User Scenarios & Testing *(mandatory)*

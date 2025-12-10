@@ -18,11 +18,33 @@ const sidebars: SidebarsConfig = {
 
   // But you can create a sidebar manually
   tutorialSidebar: [
-    'intro',
     {
       type: 'category',
       label: 'Physical AI Course',
-      items: ['vla_module'],
+      items: [
+        'introduction',
+        'vla_module',
+        {
+          type: 'category',
+          label: 'Chapter 1: ROS 2 Basics',
+          items: ['chapter1_sub_topic_a', 'chapter1_sub_topic_b'], // Dummy sub-topics
+        },
+        {
+          type: 'category',
+          label: 'Chapter 2: Digital Twin Module',
+          items: ['chapter2_sub_topic_a'], // Dummy sub-topics
+        },
+        {
+          type: 'category',
+          label: 'Chapter 3: Humanoid Control',
+          items: ['chapter3_sub_topic_a', 'chapter3_sub_topic_b', 'chapter3_sub_topic_c'], // Dummy sub-topics
+        },
+        {
+          type: 'category',
+          label: 'Appendix: Tools Setup',
+          items: ['appendix_tool_a',. 'appendix_tool_b'], // Dummy sub-topics
+        },
+      ],
     },
   ],
 };
