@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://asmajawaid.github.io/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
+  url: 'https://asmajawaid.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
+  baseUrl: '/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'asmajawaid', // Usually your GitHub org/user name.
-  projectName: 'Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course', // Usually your repo name.
+  projectName: 'asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 
@@ -44,7 +44,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/Q4_SirHamzahSyed/humuniod-spec-book/tree/main/website/',
+            'https://github.com/asmajawaid/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/tree/main/website/',
         },
         blog: {
           showReadingTime: true,
@@ -55,7 +55,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/Q4_SirHamzahSyed/humuniod-spec-book/tree/main/website/',
+            'https://github.com/asmajawaid/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/tree/main/website/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -89,7 +89,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/asmajawaid/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
+                        href: 'https://github.com/asmajawaid/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
           label: 'GitHub',
           position: 'right',
         },
@@ -116,7 +116,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/asmajawaid/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
+                            href: 'https://github.com/asmajawaid/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
             },
           ],
         },
