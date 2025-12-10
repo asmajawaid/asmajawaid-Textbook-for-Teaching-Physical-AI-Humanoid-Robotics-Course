@@ -15,7 +15,7 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://github.com/asmajawaid.io',
+  url: 'https://asmajawaid.github.io/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
@@ -44,7 +44,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/Q4_SirHamzahSyed/humuniod-spec-book/tree/main/website/',
         },
         blog: {
           showReadingTime: true,
@@ -55,7 +55,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/Q4_SirHamzahSyed/humuniod-spec-book/tree/main/website/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -89,7 +89,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/asmajawaid/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
           label: 'GitHub',
           position: 'right',
         },
@@ -116,7 +116,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/Q4_SirHamzahSyed/humuniod-spec-book',
+              href: 'https://github.com/asmajawaid/Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course',
             },
           ],
         },
