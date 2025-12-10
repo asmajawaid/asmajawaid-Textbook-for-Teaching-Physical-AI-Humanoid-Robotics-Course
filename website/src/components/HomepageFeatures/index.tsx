@@ -50,7 +50,7 @@ const FeatureList: FeatureItem[] = [
         Understand the importance of simulation and synthetic data generation for training robust and reliable robotic systems.
       </>
     ),
-    link: '/docs/simulation-data-intro',
+    link: '/docs/module-2-digital-twin/sensor-simulation-lidar-realsense',
   },
 ];
 
