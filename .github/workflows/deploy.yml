@@ -4,49 +4,44 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+    # Target only the website directory if strictly separated, 
+    # but usually we want to deploy on any push that might affect docs.
+    paths:
+      - 'website/**'
+      - 'docs/**' 
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website # Important if docusaurus is in a subdir
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      # 👇 Build steps
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version: 20.x
-          cache: 'npm'
-          working-directory: website
-          # cache-dependency-path: website/
-      - name: Print current working directory
-        run: pwd
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
       - name: Install dependencies
         run: npm ci
-        working-directory: website
-      - name: Build
+
+      - name: Build website
         run: npm run build
-        working-directory: website
-      # 👆 Build steps
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # 👇 Specify build output path
-          path: website/build
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/build
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
