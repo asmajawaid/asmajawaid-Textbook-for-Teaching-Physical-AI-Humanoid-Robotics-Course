@@ -10,11 +10,11 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://asmajawaid.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
-  baseUrl: '/humuniod-spec-book/',
+  baseUrl: '/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/',
 
   // GitHub Pages deployment config
   organizationName: 'asmajawaid', // Usually your GitHub org/user name
-  projectName: 'humuniod-spec-book', // Usually your repo name
+  projectName: 'asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course', // Usually your repo name
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
 
