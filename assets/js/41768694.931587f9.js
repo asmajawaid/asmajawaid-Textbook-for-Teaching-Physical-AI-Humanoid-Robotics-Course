@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkwebsite=globalThis.webpackChunkwebsite||[]).push([[2324],{5983:a=>{a.exports=JSON.parse('{"metadata":{"permalink":"/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
