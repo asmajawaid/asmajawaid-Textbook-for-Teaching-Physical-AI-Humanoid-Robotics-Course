@@ -1,0 +1,62 @@
+---
+id: intro
+title: Introduction
+sidebar_label: Introduction
+---
+
+# Module 1: ROS 2 Foundation
+
+## Module Overview
+
+Welcome to **Module 1: ROS 2 Foundation**, the starting point of your journey into professional robotic software development. This module is designed to transform a competent programmer into a capable ROS 2 architect.
+
+Robotics is not merely about writing code; it is about managing complexity. A modern humanoid robot is a distributed system comprising dozens of processes—perceiving the world, planning movements, stabilizing balance, and communicating with operators—all simultaneously. The **Robot Operating System 2 (ROS 2)** is the industry-standard framework for managing this complexity. It provides the middleware to connect these processes, the tools to inspect them, and the conventions to ensure they are reusable.
+
+In this module, we move beyond "Hello World." We will dissect the architectural first principles of ROS 2, moving from the underlying Data Distribution Service (DDS) up to high-level orchestration with Launch files. You will not just learn *how* to write a node; you will understand *why* the system is architected this way, enabling you to make informed design decisions for complex systems.
+
+## Learning Objectives
+
+By the end of this module, you will be able to:
+
+*   **Architect Distributed Systems:** Design a robotic software stack as a graph of independent, communicating nodes rather than a monolithic script.
+*   **Manage the Lifecycle:** Create, compile, and source reproducible workspaces and packages using `colcon` and `ament`.
+*   **Implement Communication Patterns:** Select and implement the correct pattern—Topics for streaming, Services for logic, and Actions for behaviors—based on system requirements.
+*   **Configure dynamically:** Decouple algorithmic logic from configuration parameters to create reusable, tunable drivers and controllers.
+*   **Orchestrate Launch:** Automate the startup of complex, multi-node systems using Python-based Launch files.
+*   **Diagnose & Introspect:** Utilize CLI tools and visualization suites to verify system topology and debug data flow issues.
+
+## Chapter Outline
+
+This module is structured into eight focused chapters, each building upon the previous concepts:
+
+### 1. The ROS 2 Architecture
+*   **Concept:** The Computational Graph, Nodes, Contexts, and the separation of user code from the DDS middleware.
+*   **Objective:** Architect a distributed software system.
+
+### 2. Workspaces, Packages, and the Build System
+*   **Concept:** Workspace overlays/underlays, `colcon` build workflow, `package.xml` dependencies, and `ament` build types (`ament_python` vs `ament_cmake`).
+*   **Objective:** Construct a valid ROS 2 workspace and package structure.
+
+### 3. Topics: Asynchronous Pub/Sub Communication
+*   **Concept:** The Publish/Subscribe model, anonymous communication, topic interfaces (`.msg`), and QoS introductions.
+*   **Objective:** Implement the Topic communication pattern.
+
+### 4. Services: Synchronous Request/Response Patterns
+*   **Concept:** The Client/Server model, synchronous vs. asynchronous service calls, and service interfaces (`.srv`).
+*   **Objective:** Implement the Service communication pattern.
+
+### 5. Actions: Long-Running Tasks with Feedback
+*   **Concept:** Action Clients and Servers, goal states, feedback loops, cancelability, and action interfaces (`.action`).
+*   **Objective:** Implement the Action communication pattern.
+
+### 6. Runtime Configuration with Parameters
+*   **Concept:** Dynamic node configuration, YAML parameter files, and CLI parameter overrides.
+*   **Objective:** Configure nodes dynamically at runtime.
+
+### 7. Orchestration using Python Launch Files
+*   **Concept:** The launch Python API, node inclusion, namespace remapping, and parameter injection.
+*   **Objective:** Orchestrate complex system start-up sequences.
+
+### 8. Introspection, Diagnostics, and Visualization
+*   **Concept:** Analyzing the graph using `rqt_graph`, `ros2 doctor`, and command-line interface (CLI) tools (`ros2 topic`, `ros2 node`, `ros2 service`).
+*   **Objective:** Diagnose system topology and data flow issues.

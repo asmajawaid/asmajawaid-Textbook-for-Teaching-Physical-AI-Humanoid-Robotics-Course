@@ -9,9 +9,10 @@ const sidebars: SidebarsConfig = {
       collapsible: true,
       collapsed: false,
       items: [
+        'module-1-ros2/intro',
         'module-1-ros2/ros2-architecture',
-        'module-1-ros2/nodes-topics-services-actions',
         'module-1-ros2/packages-and-build-system',
+        'module-1-ros2/nodes-topics-services-actions',
         'module-1-ros2/launch-files',
         'module-1-ros2/urdf-robot-description',
       ],

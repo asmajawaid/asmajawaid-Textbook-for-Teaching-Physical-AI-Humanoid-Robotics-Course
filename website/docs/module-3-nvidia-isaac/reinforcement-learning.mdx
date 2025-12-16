@@ -1,3 +1,73 @@
-# Reinforcement Learning
+---
+id: reinforcement-learning
+title: Reinforcement Learning in Isaac
+sidebar_label: Reinforcement Learning
+---
 
-TODO: Content for this section is under development.
+# Reinforcement Learning with Isaac Lab
+
+## 1. Beyond Classical Control
+
+Classical control (PID, MPC) excels when we have perfect models of the robot and environment. However, for complex tasks—like a humanoid robot walking on uneven terrain or a hand manipulating a slippery object—classical models often fail.
+
+**Reinforcement Learning (RL)** offers an alternative. Instead of coding *how* to move, we define a **Reward Function** (e.g., "+1 for moving forward, -1 for falling") and let the robot learn the optimal policy through trial and error.
+
+## 2. Isaac Lab (formerly Orbit/Isaac Gym)
+
+Training an RL agent requires billions of samples. On a physical robot, this would take years. In a standard simulator (CPU-based), it might take weeks.
+
+**Isaac Lab** is a unified framework for robot learning built on Isaac Sim. Its "superpower" is **massive parallel simulation**. Because physics and rendering run entirely on the GPU, Isaac Lab can simulate **4,096+ robots** simultaneously on a single workstation. This compresses years of experience into minutes of training time.
+
+### Key Components
+*   **Manager-Based RL:** A modular system to define environments, rewards, and observations.
+*   **Direct Workflow:** Tensors (data) stay on the GPU. There is no CPU-RAM copying bottleneck between the physics engine and the Neural Network (PyTorch).
+
+## 3. The Training Pipeline
+
+We typically use **PPO (Proximal Policy Optimization)**, a robust on-policy algorithm. The workflow consists of three stages:
+
+### Phase 1: Environment Design
+We define the task in Python:
+*   **Observations:** What the robot sees (joint positions, IMU data, camera pixels).
+*   **Actions:** What the robot controls (motor torques).
+*   **Rewards:** The definition of success.
+    *   `reward = forward_velocity - (energy_cost * 0.1) - (impact_force * 0.01)`
+
+### Phase 2: Training (The "Gym")
+We run the training script. In the Isaac Sim window, you will see a grid of thousands of robots falling, twitching, and eventually walking.
+*   The **Policy Network** (a neural network) outputs actions.
+*   The **Critic Network** estimates the value of those actions.
+*   PPO updates the networks to maximize expected reward.
+
+### Phase 3: Export and Deployment
+Once trained, the policy is just a file (e.g., `policy.onnx`). We wrap this model in a ROS 2 node.
+*   **Input:** Live sensor data (from ROS 2 topics).
+*   **Inference:** The model computes joint commands.
+*   **Output:** Published to `/joint_commands`.
+
+## 4. Hands-On: Training a Humanoid to Walk
+
+*(Note: This requires the Isaac Lab library installed).*
+
+We will use a pre-built environment for a bipedal robot.
+
+### Step 1: Start Training
+```bash
+# Inside Isaac Lab directory
+./isaaclab.sh -p source/standalone/workflows/rsl_rl/train.py --task "Isaac-Humanoid-v0" --headless
+```
+*   `--headless`: Runs without rendering graphics (faster).
+*   `--task`: Selects the humanoid walking task.
+
+### Step 2: Monitoring
+Launch **TensorBoard** to view learning curves. You should see the "Mean Reward" increase steadily over 10-20 minutes.
+
+### Step 3: Visualization
+Once converged, run the "play" script to see the result:
+```bash
+./isaaclab.sh -p source/standalone/workflows/rsl_rl/play.py --task "Isaac-Humanoid-v0"
+```
+You will see the humanoid robustly balancing and walking, recovering from shoves (if configured) and uneven terrain.
+
+## 5. Why Simulation is Critical for RL
+RL is unsafe for real hardware during the exploration phase (the robot *will* fall). Simulation provides a safe sandbox. The challenge then becomes ensuring the learned behavior transfers to reality, which we cover in the next chapter.

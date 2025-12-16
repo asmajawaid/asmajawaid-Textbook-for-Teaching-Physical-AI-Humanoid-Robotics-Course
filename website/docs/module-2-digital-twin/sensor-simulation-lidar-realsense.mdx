@@ -1,3 +1,109 @@
-# Sensor Simulation (LiDAR, RealSense)
+---
+id: sensor-simulation-lidar-realsense
+title: Sensor Simulation
+sidebar_label: Sensor Simulation (LiDAR & RealSense)
+---
 
-TODO: Content for this section is under development.
+# Sensor Simulation: LiDAR & RealSense
+
+## 1. The Eyes of the Robot
+
+A Digital Twin is incomplete without perception. For an AI to function, it must perceive its environment. In simulation, we generate synthetic sensor data that mimics real hardware interfaces. This allows us to develop and test computer vision and SLAM (Simultaneous Localization and Mapping) algorithms entirely in software.
+
+We will focus on the three most critical sensors for humanoid robotics:
+1.  **LiDAR (Light Detection and Ranging):** For obstacle avoidance and 2D mapping.
+2.  **Depth Camera (e.g., Intel RealSense):** For 3D perception and object recognition.
+3.  **IMU (Inertial Measurement Unit):** For balance and state estimation.
+
+## 2. Simulating LiDAR
+
+LiDAR sensors measure distance by emitting laser pulses. In Gazebo, this is simulated using **Ray Casting** or GPU-accelerated **Rasterization**.
+
+### Configuration via SDF
+To simulate a 2D LiDAR, we add a sensor element to a link in the SDF/URDF.
+
+```xml
+<sensor name="lidar" type="gpu_lidar">
+  <topic>scan</topic> <!-- Publishes to /scan -->
+  <update_rate>10</update_rate>
+  <ray>
+    <scan>
+      <horizontal>
+        <samples>360</samples>
+        <resolution>1</resolution>
+        <min_angle>-3.14</min_angle>
+        <max_angle>3.14</max_angle>
+      </horizontal>
+    </scan>
+    <range>
+      <min>0.08</min>
+      <max>10.0</max>
+    </range>
+  </ray>
+  <visualize>true</visualize> <!-- Shows rays in Gazebo GUI -->
+</sensor>
+```
+
+**Data Flow:**
+1.  Gazebo computes ray intersections with world geometry.
+2.  The `Sensors` system publishes the data to the internal Gazebo transport.
+3.  `ros_gz_bridge` converts this to a `sensor_msgs/LaserScan` ROS 2 message.
+4.  The Navigation Stack consumes this message for mapping.
+
+## 3. Simulating Depth Cameras (RealSense)
+
+Depth cameras provide a point cloud—a dense 3D representation of the world. Simulating this is computationally expensive as it requires rendering the scene from the camera's perspective and calculating the depth of every pixel.
+
+### Configuration via SDF
+```xml
+<sensor name="camera" type="depth_camera">
+  <topic>camera/depth_image</topic>
+  <camera>
+    <horizontal_fov>1.047</horizontal_fov>
+    <image>
+      <width>640</width>
+      <height>480</height>
+      <format>R8G8B8</format>
+    </image>
+    <clip>
+      <near>0.1</near>
+      <far>10.0</far>
+    </clip>
+  </camera>
+</sensor>
+```
+
+When bridged to ROS 2, this produces both `sensor_msgs/Image` (RGB) and `sensor_msgs/PointCloud2` (Depth) data.
+
+## 4. Simulating IMU (Inertial Measurement Unit)
+
+The IMU is the inner ear of the humanoid robot. It provides angular velocity (Gyroscope) and linear acceleration (Accelerometer). This data is critical for the robot to know "down" and to detect falls.
+
+### Modeling Noise
+Real sensors are noisy. A perfect simulation is often worse than a noisy one because algorithms trained on perfect data fail in the real world. Gazebo allows us to inject **Gaussian Noise** into the IMU data to verify the robustness of our state estimators (e.g., Extended Kalman Filters).
+
+```xml
+<sensor name="imu_sensor" type="imu">
+  <topic>imu</topic>
+  <imu>
+    <angular_velocity>
+      <x>
+        <noise type="gaussian">
+          <mean>0.0</mean>
+          <stddev>2e-4</stddev>
+        </noise>
+      </x>
+    </angular_velocity>
+    <!-- Similar configuration for acceleration -->
+  </imu>
+</sensor>
+```
+
+## 5. Visualization in RViz2
+
+Once these sensors are simulated and bridged, we verify them using **RViz2**.
+1.  **Fixed Frame:** Set to `odom` or `base_link`.
+2.  **Add Display -> LaserScan:** Select topic `/scan`. You should see red dots outlining simulated obstacles.
+3.  **Add Display -> PointCloud2:** Select topic `/camera/depth`. You should see a 3D colored representation of the world.
+
+This closes the loop: The Simulated World (Gazebo) is perceived by Simulated Sensors, processed by ROS 2, and visualized by the Operator (RViz2), exactly mimicking the real-world workflow.

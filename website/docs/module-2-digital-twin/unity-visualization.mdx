@@ -1,3 +1,66 @@
-# Unity Visualization
+---
+id: unity-visualization
+title: Unity Visualization
+sidebar_label: Unity Visualization
+---
 
-TODO: Content for this section is under development.
+# Unity Visualization & The Sim-to-Real Gap
+
+## 1. The Sim-to-Real Gap
+
+While Gazebo is powerful, it is an approximation of reality. The discrepancy between simulation and the real world is known as the **Sim-to-Real Gap**.
+
+Common sources of this gap include:
+*   **Physics Simplifications:** Friction is rarely uniform; motors have backlash; soft bodies deform.
+*   **Visual Fidelity:** A robot learning to detect cups in Gazebo might fail in the real world because Gazebo's lighting and textures look "fake."
+*   **Sensor Noise:** Real sensors suffer from lens flare, motion blur, and magnetic interference that simple Gaussian models miss.
+
+If the gap is too large, policies trained in simulation will fail on the physical robot. To bridge this gap for *visual* perception, we often turn to game engines like **Unity**.
+
+## 2. Why Unity?
+
+Unity is a game engine designed for photorealistic rendering, real-time lighting, and complex physics. Unlike Gazebo, which focuses on robotic accuracy, Unity focuses on visual fidelity.
+
+**When to use Unity:**
+*   **Computer Vision Training:** Generating synthetic datasets for object detection where lighting and texture are critical.
+*   **Human-Robot Interaction (HRI):** Visualizing the robot in a realistic home environment (e.g., a kitchen) to test user interfaces.
+*   **VR/AR Interfaces:** allowing a human to teleoperate the robot using a VR headset.
+
+## 3. Unity Robotics Hub
+
+The [Unity Robotics Hub](https://github.com/Unity-Technologies/Unity-Robotics-Hub) is a set of open-source tools maintained by Unity Technologies to integrate with ROS 2.
+
+### 3.1 The ROS-TCP Endpoint
+Communication between Unity and ROS 2 is handled by the **ROS-TCP Endpoint**.
+*   **ROS Side:** A ROS 2 node (`ros_tcp_endpoint`) runs and listens for incoming TCP connections.
+*   **Unity Side:** A C# script connects to this endpoint, serializing C# structs into ROS 2 messages.
+
+This allows Unity to subscribe to `/joint_states` to visualize the robot moving, or publish to `/camera/image_raw` to send rendered frames to a ROS 2 computer vision node.
+
+### 3.2 URDF Importer
+Unity provides a **URDF Importer** package. This tool parses your existing `robot_description` and automatically generates a Unity GameObject hierarchy with:
+*   **Mesh Colliders:** For physics.
+*   **Articulation Bodies:** A specialized Unity component for robotic joints (hinges, sliders) that behaves more accurately than standard game physics joints.
+
+## 4. Domain Randomization
+
+A powerful technique to overcome the visual Sim-to-Real gap in Unity is **Domain Randomization**.
+
+Instead of trying to create one *perfect* simulation of a room, we create thousands of *randomized* variations. We vary:
+*   **Lighting:** Color, intensity, direction.
+*   **Textures:** Wall colors, floor patterns.
+*   **Camera Position:** Angle, FOV, noise.
+
+By training an AI on this highly variable data, the model learns to ignore these distractions and focus on the essential features (e.g., the shape of the cup). When deployed to the real world, the AI treats reality as just another "random variation" of the simulation.
+
+## 5. Summary: Gazebo vs. Unity
+
+| Feature | Gazebo Garden | Unity |
+| :--- | :--- | :--- |
+| **Primary Goal** | Physics & Control Accuracy | Visual Fidelity & Interaction |
+| **Rendering** | Functional, basic PBR | Photorealistic, Ray Tracing |
+| **Physics** | DART, Bullet, ODE (High precision) | PhysX (Game-optimized) |
+| **ROS 2 Integration** | Native (`ros_gz`) | Plugin-based (TCP Endpoint) |
+| **Best For** | Locomotion, Navigation, Dynamics | Vision datasets, VR, HRI |
+
+In this course, we will primarily use **Gazebo** for developing our control and navigation stacks, but we will revisit **Unity** in later modules when we explore visual reinforcement learning.

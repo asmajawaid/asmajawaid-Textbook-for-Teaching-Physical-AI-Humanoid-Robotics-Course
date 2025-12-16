@@ -1,9 +1,85 @@
 ---
-sidebar_label: 'Introduction'
+id: gazebo-physics-simulation
+title: Gazebo Physics Simulation
+sidebar_label: Gazebo Physics Simulation
 ---
 
-# Introduction to Synthetic Data and Simulation
+# Gazebo Physics Simulation
 
-Welcome to the module on simulation.
+## 1. The Power of Simulation
 
-This section explores the critical role of simulation and synthetic data generation in training and testing robust AI models for robotics without relying on physical hardware.
+In the context of Physical AI, simulation is non-negotiable. It serves as the training ground where the "Brain" (AI/ROS 2) learns to control the "Body" (Robot) without the risks associated with hardware. A robust **Digital Twin** allows us to validate kinematic chains, test control laws under gravity and friction, and verify sensor pipelines before manufacturing a single part.
+
+We distinguish between two types of simulators:
+1.  **Physics Engines (e.g., Gazebo, MuJoCo):** Prioritize correct interaction of forces, contacts, and joints. Essential for control and locomotion.
+2.  **Game Engines (e.g., Unity, Unreal):** Prioritize visual fidelity and rendering speed. Essential for computer vision and human-robot interaction.
+
+In this section, we focus on **Gazebo**, the standard physics simulator for the ROS ecosystem.
+
+## 2. Gazebo Garden: The Modern Standard
+
+Historically, ROS developers used "Gazebo Classic" (versions 9-11). However, the ecosystem has moved to the new **Gazebo** (formerly Ignition Gazebo), starting with the Garden and Harmonic distributions. This module uses **Gazebo Garden** due to its modular architecture and tight integration with ROS 2 via `ros_gz`.
+
+### Key Concepts
+*   **World:** The root simulation object containing physics properties (gravity, magnetic field) and lighting.
+*   **Model:** A collection of links and joints representing a robot or static object.
+*   **Plugin:** C++ code compiled as shared libraries that hook into the simulation loop to control models or generate sensor data.
+
+## 3. From URDF to Simulated Reality
+
+In Module 1, we defined robots using **URDF** (Unified Robot Description Format). While URDF is excellent for kinematics (how parts move relative to each other), it lacks the rich detail needed for dynamics (how forces affect motion).
+
+To simulate a robot in Gazebo, we use **SDF** (Simulation Description Format). SDF extends URDF by allowing detailed definitions of:
+*   **Friction & Damping:** How joints resist motion.
+*   **Collisions:** Precise geometries for contact resolution.
+*   **Inertial Properties:** Mass and moments of inertia matrices.
+
+### 3.1 The Bridge: `ros_gz`
+
+ROS 2 and Gazebo are separate processes. They communicate via a bridge package called `ros_gz`.
+
+*   **ros_gz_sim:** Launches the Gazebo environment.
+*   **ros_gz_bridge:** Translates Gazebo transport messages (protobufs) into ROS 2 messages (DDS) and vice versa.
+
+### 3.2 Example: Spawning a URDF
+
+To spawn a URDF model into Gazebo, we typically use the `create` node provided by the `ros_gz_sim` package.
+
+```python
+# snippet from a launch file
+from launch_ros.actions import Node
+
+spawn_node = Node(
+    package='ros_gz_sim',
+    executable='create',
+    arguments=[
+        '-name', 'my_robot',
+        '-topic', 'robot_description', # Reads URDF from this topic
+        '-x', '0.0',
+        '-z', '0.5' # Spawn slightly above ground to prevent clipping
+    ],
+    output='screen'
+)
+```
+
+## 4. Adding Dynamics with Plugins
+
+A static robot is not useful. To make it move, we attach **Model Plugins**. These are akin to "drivers" for the simulated hardware.
+
+### Differential Drive Plugin
+For a wheeled robot, the `DiffDrive` plugin listens to velocity commands (`cmd_vel`) and applies torque to the wheels.
+
+**SDF Configuration:**
+```xml
+<plugin
+  filename="ignition-gazebo-diff-drive-system"
+  name="ignition::gazebo::systems::DiffDrive">
+  <left_joint>left_wheel_joint</left_joint>
+  <right_joint>right_wheel_joint</right_joint>
+  <wheel_separation>0.4</wheel_separation>
+  <wheel_radius>0.1</wheel_radius>
+  <topic>cmd_vel</topic> <!-- The ROS 2 topic to listen to -->
+</plugin>
+```
+
+By adding this plugin to your robot description, you enable the `geometry_msgs/Twist` interface, allowing your navigation stack to drive the simulated robot exactly as it would the real one.

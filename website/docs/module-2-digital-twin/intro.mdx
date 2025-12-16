@@ -1,0 +1,42 @@
+---
+title: Module 2 Overview
+sidebar_label: Module Overview
+sidebar_position: 0
+---
+
+# Module 2: The Digital Twin
+
+## Module Overview
+
+Welcome to **Module 2: The Digital Twin**. In the previous module, you learned the abstract architecture of ROS 2—nodes, topics, and services. Now, we give those concepts a physical form.
+
+A **Digital Twin** is a high-fidelity virtual replica of a physical robot and its environment. It is not merely a 3D model; it is a dynamic simulation that respects the laws of physics, mimics sensor noise, and interacts with the exact same software stack as the real machine. In this module, you will learn to construct these simulations using **Gazebo** (the standard for robotics physics) and explore **Unity** (for high-fidelity visualization).
+
+Simulation is the primary workspace for a Physical AI engineer. It allows us to crash a million-dollar robot a thousand times without cost, train reinforcement learning agents in parallel, and validate safety systems before they ever touch the real world.
+
+## Learning Objectives
+
+By the end of this module, you will be able to:
+
+*   **Define Digital Twins:** Understand the role of simulation in the "Sim-to-Real" development cycle.
+*   **Master Gazebo:** specificially Gazebo Garden, to simulate rigid body dynamics and environments.
+*   **Bridge Models:** Convert standard URDFs (from Module 1) into Simulation Description Format (SDF) for enhanced physical properties.
+*   **Simulate Sensors:** Attach and configure virtual LIDARs, Depth Cameras (RealSense), and IMUs that publish standard ROS 2 messages.
+*   **Evaluate Simulators:** Distinguish between physics-first engines (Gazebo) and rendering-first engines (Unity) for different use cases.
+
+## Chapter Outline
+
+### 1. [Gazebo Physics Simulation](./gazebo-physics-simulation.mdx)
+*   **Concept:** The transition from kinematic descriptions to dynamic simulations.
+*   **Topics:** Gazebo architecture, URDF vs. SDF, physics engines, and model plugins.
+*   **Goal:** Spawn a mobile robot in a physics-enabled world and control it via ROS 2.
+
+### 2. [Sensor Simulation: LiDAR & RealSense](./sensor-simulation-lidar-realsense.mdx)
+*   **Concept:** The "Eyes and Ears" of the Digital Twin.
+*   **Topics:** Ray-casting for LiDAR, depth buffer rendering for cameras, and IMU noise modeling.
+*   **Goal:** Visualize live sensor data from a simulated robot in RViz2.
+
+### 3. [Unity Visualization](./unity-visualization.mdx)
+*   **Concept:** High-fidelity rendering and the Sim-to-Real gap.
+*   **Topics:** Unity Robotics Hub, photorealism vs. physical accuracy, and visual domain randomization.
+*   **Goal:** Understand when to leverage Unity for perception training.

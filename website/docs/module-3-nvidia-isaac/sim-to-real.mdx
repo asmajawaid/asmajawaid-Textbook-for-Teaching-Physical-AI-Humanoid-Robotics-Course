@@ -1,3 +1,57 @@
-# Sim-to-Real Transfer Techniques
+---
+id: sim-to-real
+title: Sim-to-Real Transfer
+sidebar_label: Sim-to-Real Transfer
+---
 
-TODO: Content for this section is under development.
+# Sim-to-Real: Bridging the Gap
+
+## 1. The Reality Gap
+
+You trained a robot to walk in Isaac Sim. It looks perfect. You deploy the policy to the physical robot, and it immediately falls over. Why?
+
+This is the **Reality Gap**. It stems from discrepancies between the simulation and the physical world:
+*   **Dynamics Mismatch:** Real motors have friction, backlash, and delay that simpler physics models ignore.
+*   **Sensor Noise:** Real IMUs drift; real cameras have motion blur and lens distortion.
+*   **Unmodeled Physics:** Soft surfaces (carpets), cable drag, or battery voltage drops.
+
+If a neural network overfits to the "perfect" simulation, it becomes fragile in the real world.
+
+## 2. Domain Randomization
+
+The primary weapon against the Reality Gap is **Domain Randomization**. Instead of trying to model the world perfectly (which is impossible), we model it probabilistically. We train the agent across a distribution of environments.
+
+### 2.1 Visual Randomization
+(Discussed in Module 2 with Unity/Isaac Replicator). Changing lights, textures, and camera positions prevents the vision system from relying on specific artifacts.
+
+### 2.2 Dynamics Randomization
+This is crucial for control (RL). During training in Isaac Lab, we randomize physical properties for every robot instance:
+*   **Mass:** $\pm 10\%$
+*   **Friction:** $0.5$ to $1.2$
+*   **Motor Strength:** $\pm 5\%$
+*   **Latency:** Add random delay (10ms - 30ms) to actions.
+
+**The Insight:** If the policy can walk efficiently whether the robot weighs 45kg or 55kg, and whether the floor is ice or concrete, it is robust. When deployed to the real robot (which might be 50kg on tile), the policy treats it as just another variation it has already seen.
+
+## 3. System Identification (SysID)
+
+Domain Randomization assumes "Robustness." **System Identification** assumes "Accuracy."
+
+SysID involves measuring real-world parameters to tune the simulator.
+*   **Procedure:** Record the real robot's response to a step input (e.g., specific motor command). Play the same command in simulation.
+*   **Tuning:** Adjust the simulation parameters (damping, stiffness) until the simulated response matches the real data.
+
+**Adaptive Control:** Advanced methods train an "Adapter" network that estimates these invisible parameters (like payload mass) in real-time based on the robot's history of movement, allowing the policy to adjust its behavior on the fly.
+
+## 4. Closing the Loop with ROS 2
+
+The ultimate test of Sim-to-Real is deployment.
+1.  **Training:** RL Policy trained in Isaac Lab (Python/PyTorch).
+2.  **Export:** Policy saved as ONNX (Open Neural Network Exchange).
+3.  **Deployment:** A ROS 2 node (`policy_runner`) loads the ONNX file.
+    *   Subscribes to `/joint_states` and `/imu/data`.
+    *   Normalizes the data (matching the scaling used in training).
+    *   Runs inference.
+    *   Publishes to `/effort_controller/commands`.
+
+By maintaining strict interface consistency between the simulated ROS 2 bridge and the real hardware drivers, the software stack "does not know" it has left the simulation.

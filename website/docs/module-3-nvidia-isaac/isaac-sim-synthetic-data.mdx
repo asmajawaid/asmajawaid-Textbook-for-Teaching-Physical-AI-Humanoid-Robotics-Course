@@ -1,3 +1,88 @@
-# Isaac Sim & Synthetic Data
+---
+id: isaac-sim-synthetic-data
+title: Isaac Sim & Synthetic Data
+sidebar_label: Isaac Sim & Synthetic Data
+---
 
-TODO: Content for this section is under development.
+# Isaac Sim & Synthetic Data Generation
+
+## 1. The Omniverse Paradigm
+
+NVIDIA Isaac Sim represents a paradigm shift from traditional robotics simulators. Unlike CPU-bound engines, Isaac Sim is built on **NVIDIA Omniverse**, a platform designed for virtual collaboration and physically accurate real-time simulation.
+
+At its core lies **OpenUSD (Universal Scene Description)**. Originally developed by Pixar, USD is a file format that describes complex 3D scenes. In Isaac Sim, everything—robots, lights, physics materials, and sensors—is defined in USD. This allows for:
+*   **Photorealism:** Ray-traced rendering (RTX) provides accurate lighting, reflections, and shadows.
+*   **Scalability:** GPU-accelerated physics (PhysX 5) allows simulating thousands of robots simultaneously.
+*   **Interoperability:** Assets can be easily moved between CAD tools (SolidWorks, Blender) and the simulator.
+
+## 2. Setting Up the Environment
+
+Isaac Sim requires significant GPU resources (RTX 30-series recommended). It runs inside a container or natively on Linux/Windows.
+
+### 2.1 The Interface
+Upon launching Isaac Sim, you are presented with the Viewport (3D scene) and the Stage (USD hierarchy).
+*   **Create > Physics > Ground Plane:** Adds a floor with collision.
+*   **Isaac Assets > Robots:** Drag-and-drop pre-configured robots like the **NVIDIA Carter** or **Franka Emika Panda**.
+
+### 2.2 The ROS 2 Bridge
+To communicate with ROS 2, we enable the `ros2_bridge` extension.
+1.  Go to **Window > Extensions**.
+2.  Search for `ros2_bridge` and enable it.
+3.  The bridge automatically maps USD attributes (like joint positions) to ROS 2 topics.
+
+## 3. Simulating Sensors
+
+Isaac Sim simulates sensors by rendering the scene from specific viewpoints or computing ray interactions on the GPU.
+
+### 3.1 RGB-D Cameras
+Cameras in Isaac Sim support varying output types:
+*   **RGB:** Photorealistic color images.
+*   **Depth:** Distance from the camera plane to objects (essential for VSLAM).
+*   **Semantic Segmentation:** Pixel-wise classification based on object labels.
+
+**Action:** To add a camera, right-click in the Stage -> **Create > Camera**. Then, use the **Action Graph** to publish its data to a ROS 2 topic like `/camera/image_raw`.
+
+### 3.2 LiDAR
+The **RTX Lidar** simulates laser scanners using ray tracing. It can model spinning velodynes or solid-state lidars.
+*   **Configuration:** Set `drawLines` to visualize rays and `rotationRate` for spin speed.
+*   **ROS 2 Output:** Bridges to `sensor_msgs/PointCloud2` or `sensor_msgs/LaserScan`.
+
+## 4. Synthetic Data Generation (SDG)
+
+One of the most powerful features of Isaac Sim is **Isaac Replicator**, a framework for generating massive datasets to train AI models. Real-world data is expensive and tedious to label. Synthetic data is free and automatically labeled.
+
+### 4.1 Domain Randomization
+To prevent an AI from memorizing a specific background, we randomize the scene. Replicator allows us to write Python scripts that vary:
+*   **Lighting:** Changing position, color, and intensity of lights.
+*   **Textures:** Swapping materials on floors and walls.
+*   **Distractors:** Spawning random objects (cubes, spheres) to occlude the target.
+
+### 4.2 Example: Generating an Object Detection Dataset
+The following Python snippet (run inside Isaac Sim's Script Editor) sets up a randomization graph:
+
+```python
+import omni.replicator.core as rep
+
+with rep.new_layer():
+    # Define a camera
+    camera = rep.create.camera(position=(0, 500, 1000), look_at=(0,0,0))
+    
+    # Define the object to detect (e.g., a pallet)
+    target = rep.create.from_usd("omniverse://localhost/Assets/Pallet.usd")
+    
+    # Randomize position and texture
+    with rep.trigger.on_frame(num_frames=100):
+        with rep.create.group([target]):
+            rep.randomizer.instantiate(rep.create.cube, size=10, count=5) # Distractors
+            rep.randomizer.texture(textures=["/Textures/Wood", "/Textures/Metal"])
+            
+    # Save Output
+    render_product = rep.create.render_product(camera, (1024, 1024))
+    writer = rep.WriterRegistry.get("BasicWriter")
+    writer.initialize(output_dir="_output_dataset", rgb=True, bounding_box_2d_tight=True)
+    writer.attach(render_product)
+    
+    rep.orchestrator.run()
+```
+
+This script generates 100 images with bounding box annotations, ready to train a YOLO or SSD model.
