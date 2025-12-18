@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: Book Assistant API
+  version: 1.0.0
+  description: API for a conversational agent capable of answering questions based on the book's content.
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /chat:
+    post:
+      summary: Send a user query to the conversational agent
+      operationId: chatWithAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Successful response from the agent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Invalid request payload
+        '500':
+          description: Internal server error or agent failure
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - user_query
+        - session_id
+      properties:
+        user_query:
+          type: string
+          description: The natural language question from the user.
+          example: "What is the ROS 2 architecture?"
+        session_id:
+          type: string
+          description: Unique identifier for the chat session to maintain context.
+          example: "user123-sessionabc"
+
+    ChatResponse:
+      type: object
+      required:
+        - answer
+      properties:
+        answer:
+          type: string
+          description: The agent's generated response to the user query.
+          example: "ROS 2 architecture is based on a graph of nodes that communicate..."
+        citations:
+          type: array
+          description: List of source documents used by the agent, including URL and title.
+          items:
+            $ref: '#/components/schemas/Citation'
+
+    Citation:
+      type: object
+      required:
+        - url
+        - title
+      properties:
+        url:
+          type: string
+          format: url
+          description: URL of the source document.
+          example: "https://asmajawaid.github.io/asmajawaid-Textbook-for-Teaching-Physical-AI-Humanoid-Robotics-Course/docs/module-1-ros2/ros2-architecture"
+        title:
+          type: string
+          description: Title of the source document.
+          example: "The ROS 2 Architecture"

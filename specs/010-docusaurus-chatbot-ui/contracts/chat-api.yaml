@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: RAG Chatbot API
+  version: 1.0.0
+  description: API for the Docusaurus RAG Chatbot Integration
+paths:
+  /chat:
+    post:
+      summary: Send a query and get a generated answer
+      operationId: chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The user's natural language question
+                  example: "How do I install the dependencies?"
+              required:
+                - query
+      responses:
+        '200':
+          description: Successful response with answer and citations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                    description: The generated answer in Markdown format
+                    example: "To install dependencies, run `pip install -r requirements.txt`."
+                  sources:
+                    type: array
+                    description: List of sources used for the answer
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: "Installation Guide"
+                        url:
+                          type: string
+                          example: "/docs/installation"
+                        content:
+                          type: string
+                          description: Snippet of the content
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string

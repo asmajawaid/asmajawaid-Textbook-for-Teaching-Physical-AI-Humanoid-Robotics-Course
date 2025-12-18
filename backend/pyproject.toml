@@ -1,0 +1,19 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "cohere>=5.20.0",
+    "langchain-text-splitters>=1.1.0",
+    "qdrant-client>=1.16.2",
+    "requests>=2.32.5",
+    "lxml>=5.0.0",
+    "fastapi",
+    "uvicorn",
+    "openai",
+    "python-dotenv",
+    "pydantic-settings>=2.12.0",
+]
