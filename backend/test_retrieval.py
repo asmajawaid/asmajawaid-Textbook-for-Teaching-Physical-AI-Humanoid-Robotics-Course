@@ -1,11 +1,12 @@
 import os
 import time
 import cohere
+from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Filter, FieldCondition, Range
 from typing import List, Dict, Any
 
-def perform_search(co_client: cohere.Client, qdrant_client: QdrantClient, collection_name: str, 
+def perform_search(co_client: cohere.Client, qdrant_client: QdrantClient, collection_name: str,
                    query: str, k: int = 3, threshold: float = 0.5):
     start_time = time.time()
     
@@ -57,10 +58,14 @@ def perform_search(co_client: cohere.Client, qdrant_client: QdrantClient, collec
 def main():
     print("Initializing RAG Pipeline Validation...")
     
+    # Load environment variables
+    load_dotenv()
+    
     # T003: Implement environment variable loading
     cohere_api_key = os.environ.get("COHERE_API_KEY")
     qdrant_url = os.environ.get("QDRANT_URL")
     qdrant_api_key = os.environ.get("QDRANT_API_KEY")
+    key = os.getenv("OPENAI_API_KEY")
 
     if not all([cohere_api_key, qdrant_url, qdrant_api_key]):
         print("Error: Missing one or more required environment variables: COHERE_API_KEY, QDRANT_URL, QDRANT_API_KEY")

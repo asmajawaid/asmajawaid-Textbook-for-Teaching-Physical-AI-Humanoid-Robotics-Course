@@ -67,10 +67,15 @@ As a user, I want to ask questions outside the book's scope so that the agent ca
 -   **FR-004**: System MUST integrate the previously developed retrieval pipeline (from Spec 007) as a Tool/Function Call that the OpenAI Agent can invoke.
 -   **FR-005**: The agent MUST synthesize answers strictly based on the context retrieved by the retrieval tool.
 -   **FR-006**: The agent MUST provide a graceful "I don't know" response if no relevant information is found by the retrieval tool or if the query is outside the scope of its knowledge base.
--   **FR-007**: System MUST implement basic chat history/state management using in-memory storage for the current phase, leveraging the OpenAI SDK to enable contextually aware follow-up questions within a session.
+-   **FR-007**: System MUST implement persistent chat history using Neon Serverless Postgres to allow follow-up questions across server restarts. Sessions MUST expire after 30 days of inactivity.
 -   **FR-008**: System MUST include logging for incoming requests, agent tool calls, responses, and errors.
 -   **FR-009**: System MUST implement middleware or decorators for robust error handling, including API timeouts (OpenAI, Qdrant) and retrieval tool failures, returning errors in the format: `{ "detail": "Error description here", "code": "ERROR_CODE" }`.
 -   **FR-010**: The `/chat` endpoint response MUST include the agent's answer and any relevant citations (source URLs and titles) if context was retrieved.
+
+-   **FR-011**: System MUST support a "Selected-Text-Only" mode. If `selected_text` is provided in the request, the agent MUST ignore the retrieval tool and answer strictly using the provided text.
+-   **FR-012**: The agent MUST return a specific message (e.g., "Information not found in the selected text") if it cannot answer a `selected_text` query using only that context.
+
+-   **FR-013**: The system MUST support queries and responses in English only for the current phase.
 
 ### Non-Functional Requirements
 
@@ -80,13 +85,14 @@ As a user, I want to ask questions outside the book's scope so that the agent ca
 -   **NFR-004 (Security)**: The FastAPI application MUST be resilient to common web vulnerabilities (e.g., XSS, SQLi, CSRF, as applicable to a chat API). (This will be an implicit check, not a direct implementation task within this spec).
 -   **NFR-005 (Security)**: The `/chat` API endpoint MUST be publicly accessible without authentication in the current phase.
 -   **NFR-006 (Integration)**: The FastAPI application MUST enable Cross-Origin Resource Sharing (CORS) for all origins (`*`) to facilitate frontend integration during development.
--   **NFR-007 (Security)**: The `/chat` API endpoint MUST implement basic rate limiting (e.g., per IP address or per session ID) to prevent abuse and control resource usage.
+-   **NFR-007 (Security)**: The `/chat` API endpoint MUST implement rate limiting of 10 requests per minute per IP address to prevent abuse.
 
 ### Key Entities *(include if feature involves data)*
 
 -   **ChatRequest**:
     -   `user_query`: User's natural language question (string).
     -   `session_id`: Unique identifier for the chat session (string).
+    -   `selected_text`: Optional string containing text selected by the user from the book. If present, triggers context-restricted mode.
 -   **ChatResponse**:
     -   `answer`: The agent's generated response (string).
     -   `citations`: List of dictionaries, each containing `url` and `title` (list of objects).
@@ -99,6 +105,13 @@ As a user, I want to ask questions outside the book's scope so that the agent ca
     -   `tool_output`: Result returned by the tool (JSON object/dictionary).
 
 ## Clarifications
+### Session 2025-12-18
+- Q: How should the "Selected-Text-Only Q&A" mode be implemented in the `/chat` endpoint? → A: Add `selected_text` (optional string) to `ChatRequest`; if present, agent MUST skip RAG and answer only from that text.
+- Q: What specific rate limiting parameters should be applied to the `/chat` endpoint? → A: 10 requests per minute per IP address.
+- Q: Should chat session history be persistent across server restarts? → A: Yes, implement Neon Postgres immediately for session persistence.
+- Q: What is the desired expiration policy for persistent sessions? → A: Sessions expire after 30 days of inactivity.
+- Q: What languages should the conversational agent support? → A: Support English only.
+
 ### Session 2025-12-17
 - Q: Is the `/chat` API endpoint intended to be publicly accessible, or will it require authentication (e.g., API key, OAuth)? → A: Publicly accessible without authentication.
 - Q: What is the desired JSON format for error responses (e.g., API timeouts, retrieval failures, validation errors) from the `/chat` endpoint? → A: `{ "detail": "Error description here", "code": "ERROR_CODE" }`

@@ -1,8 +1,14 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import uuid
+
+# Load environment variables
+load_dotenv()
+key = os.getenv("OPENAI_API_KEY")
 
 # Import service (assuming it's in the python path)
 from backend.services.agent_service import generate_agent_response
